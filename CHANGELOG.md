@@ -1,3 +1,10 @@
+## 3.0.0
+### Breaking Changes:
+* Add flutter version constraint to be >=3.22.0. This will break for lower versions of Flutter
+
+### Other
+* apply latest linters rules
+
 ## 2.0.0
 ### Breaking Changes:
 * Remove onOffsetChange in SmartRefresher,autoLoad in RefreshConfiguration,scrollController in RefreshController

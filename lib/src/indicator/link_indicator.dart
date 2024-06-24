@@ -12,16 +12,11 @@ class LinkHeader extends RefreshIndicator {
   final Key linkKey;
 
   const LinkHeader(
-      {Key? key,
+      {super.key,
       required this.linkKey,
-      double height: 0.0,
-      RefreshStyle? refreshStyle,
-      Duration completeDuration: const Duration(milliseconds: 200)})
-      : super(
-            height: height,
-            refreshStyle: refreshStyle,
-            completeDuration: completeDuration,
-            key: key);
+      super.height = 0.0,
+      super.refreshStyle = null,
+      super.completeDuration = const Duration(milliseconds: 200)});
 
   @override
   State<StatefulWidget> createState() {
@@ -79,11 +74,7 @@ class LinkFooter extends LoadIndicator {
   final Key linkKey;
 
   const LinkFooter(
-      {Key? key,
-      required this.linkKey,
-      double height: 0.0,
-      LoadStyle loadStyle: LoadStyle.ShowAlways})
-      : super(height: height, loadStyle: loadStyle, key: key);
+      {super.key, required this.linkKey, super.height = 0.0, super.loadStyle});
 
   @override
   State<StatefulWidget> createState() {

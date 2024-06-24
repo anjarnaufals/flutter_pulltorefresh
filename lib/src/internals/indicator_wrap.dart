@@ -15,9 +15,9 @@ import 'slivers.dart';
 
 typedef VoidFutureCallBack = Future<void> Function();
 
-typedef void OffsetCallBack(double offset);
+typedef OffsetCallBack = void Function(double offset);
 
-typedef void ModeChangeCallBack<T>(T? mode);
+typedef ModeChangeCallBack<T> = void Function(T? mode);
 
 /// a widget  implements ios pull down refresh effect and Android material RefreshIndicator overScroll effect
 abstract class RefreshIndicator extends StatefulWidget {
@@ -34,12 +34,11 @@ abstract class RefreshIndicator extends StatefulWidget {
   final Duration completeDuration;
 
   const RefreshIndicator(
-      {Key? key,
-      this.height: 60.0,
-      this.offset: 0.0,
-      this.completeDuration: const Duration(milliseconds: 500),
-      this.refreshStyle: RefreshStyle.Follow})
-      : super(key: key);
+      {super.key,
+      this.height = 60.0,
+      this.offset = 0.0,
+      this.completeDuration = const Duration(milliseconds: 500),
+      this.refreshStyle = RefreshStyle.Follow});
 }
 
 /// a widget  implements  pull up load
@@ -54,11 +53,10 @@ abstract class LoadIndicator extends StatefulWidget {
   final VoidCallback? onClick;
 
   const LoadIndicator(
-      {Key? key,
+      {super.key,
       this.onClick,
-      this.loadStyle: LoadStyle.ShowAlways,
-      this.height: 60.0})
-      : super(key: key);
+      this.loadStyle = LoadStyle.ShowAlways,
+      this.height = 60.0});
 }
 
 /// Internal Implementation of Head Indicator
@@ -137,6 +135,7 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
     return _position!.pixels < 0.0;
   }
 
+  @override
   double _calculateScrollOffset() {
     return (floating
             ? (mode == RefreshStatus.twoLeveling ||
@@ -157,6 +156,7 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
   }
 
   // handle the  state change between canRefresh and idle canRefresh  before refreshing
+  @override
   void _dispatchModeByOffset(double offset) {
     if (mode == RefreshStatus.twoLeveling) {
       if (_position!.pixels > configuration!.closeTwoLevelDistance &&
@@ -230,6 +230,7 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
     }
   }
 
+  @override
   void _handleModeChange() {
     if (!mounted) {
       return;
@@ -257,7 +258,7 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
           the _onOffsetChange didn't callback,it will keep failed or success state.
           2. As FrontStyle,when user dragging in 0~100 in refreshing state,it should be reset after the state change
           */
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) {
             return;
           }
@@ -287,7 +288,7 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
     } else if (mode == RefreshStatus.twoLevelOpening) {
       floating = true;
       refresherState!.setCanDrag(false);
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         activity!.resetActivity();
         _position!
@@ -311,11 +312,13 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
   }
 
   // the method can provide a callback to implements some animation
+  @override
   Future<void> readyToRefresh() {
     return Future.value();
   }
 
   // it mean the state will enter success or fail
+  @override
   Future<void> endRefresh() {
     return Future.delayed(widget.completeDuration);
   }
@@ -324,26 +327,27 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
     return true;
   }
 
+  @override
   void resetValue() {}
 
   @override
   Widget build(BuildContext context) {
     return SliverRefresh(
         paintOffsetY: widget.offset,
-        child: RotatedBox(
-          child: buildContent(context, mode),
-          quarterTurns: needReverseAll() &&
-                  Scrollable.of(context)!.axisDirection == AxisDirection.up
-              ? 10
-              : 0,
-        ),
         floating: floating,
         refreshIndicatorLayoutExtent: mode == RefreshStatus.twoLeveling ||
                 mode == RefreshStatus.twoLevelOpening ||
                 mode == RefreshStatus.twoLevelClosing
             ? refresherState!.viewportExtent
             : widget.height,
-        refreshStyle: widget.refreshStyle);
+        refreshStyle: widget.refreshStyle,
+        child: RotatedBox(
+          quarterTurns: needReverseAll() &&
+                  Scrollable.of(context).axisDirection == AxisDirection.up
+              ? 10
+              : 0,
+          child: buildContent(context, mode),
+        ));
   }
 }
 
@@ -354,6 +358,7 @@ abstract class LoadIndicatorState<T extends LoadIndicator> extends State<T>
   bool _enableLoading = false;
   LoadStatus? _lastMode = LoadStatus.idle;
 
+  @override
   double _calculateScrollOffset() {
     final double overScrollPastEnd =
         math.max(_position!.pixels - _position!.maxScrollExtent, 0.0);
@@ -376,7 +381,7 @@ abstract class LoadIndicatorState<T extends LoadIndicator> extends State<T>
   @override
   Future endLoading() {
     // TODO: implement endLoading
-    return Future.delayed(Duration(milliseconds: 0));
+    return Future.delayed(const Duration(milliseconds: 0));
   }
 
   void finishLoading() {
@@ -389,8 +394,8 @@ abstract class LoadIndicatorState<T extends LoadIndicator> extends State<T>
       }
 
       // this line for patch bug temporary:indicator disappears fastly when load more complete
-      if (mounted) Scrollable.of(context)!.position.correctBy(0.00001);
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (mounted) Scrollable.of(context).position.correctBy(0.00001);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted && _position?.outOfRange == true) {
           activity!.delegate.goBallistic(0);
         }
@@ -423,6 +428,7 @@ abstract class LoadIndicatorState<T extends LoadIndicator> extends State<T>
     return false;
   }
 
+  @override
   void _handleModeChange() {
     if (!mounted || _isHide) {
       return;
@@ -464,6 +470,7 @@ abstract class LoadIndicatorState<T extends LoadIndicator> extends State<T>
     onModeChange(mode);
   }
 
+  @override
   void _dispatchModeByOffset(double offset) {
     if (!mounted || _isHide || LoadStatus.loading == mode || floating) {
       return;
@@ -484,6 +491,7 @@ abstract class LoadIndicatorState<T extends LoadIndicator> extends State<T>
     }
   }
 
+  @override
   void _handleOffsetChange() {
     if (_isHide) {
       return;
@@ -514,6 +522,7 @@ abstract class LoadIndicatorState<T extends LoadIndicator> extends State<T>
     }
   }
 
+  @override
   void _onPositionUpdated(ScrollPosition newPosition) {
     _position?.isScrollingNotifier.removeListener(_listenScrollEnd);
     newPosition.isScrollingNotifier.addListener(_listenScrollEnd);
@@ -624,7 +633,7 @@ mixin IndicatorStateMixin<T extends StatefulWidget, V> on State<T> {
     RefreshNotifier<V>? newMode = V == RefreshStatus
         ? refresher!.controller.headerMode as RefreshNotifier<V>?
         : refresher!.controller.footerMode as RefreshNotifier<V>?;
-    final ScrollPosition newPosition = Scrollable.of(context)!.position;
+    final ScrollPosition newPosition = Scrollable.of(context).position;
     if (newMode != _mode) {
       _mode?.removeListener(_handleModeChange);
       _mode = newMode;
@@ -686,7 +695,7 @@ mixin IndicatorStateMixin<T extends StatefulWidget, V> on State<T> {
 }
 
 /// head Indicator exposure interface
-abstract class RefreshProcessor {
+abstract mixin class RefreshProcessor {
   /// out of edge offset callback
   void onOffsetChange(double offset) {}
 
@@ -708,7 +717,7 @@ abstract class RefreshProcessor {
 }
 
 /// footer Indicator exposure interface
-abstract class LoadingProcessor {
+abstract mixin class LoadingProcessor {
   void onOffsetChange(double offset) {}
 
   void onModeChange(LoadStatus? mode) {}
