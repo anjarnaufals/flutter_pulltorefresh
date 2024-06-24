@@ -9,6 +9,11 @@
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg"/>
 </a>
 
+# DISCLAIMER
+this repository just forked and update from [https://github.com/peng8350/flutter_pulltorefresh]
+not published to pub.dev
+
+
 ## Intro
 a widget provided to the flutter scroll component drop-down refresh and pull up load.support android and ios.
 If you are Chinese,click here([中文文档](https://github.com/peng8350/flutter_pulltorefresh/blob/master/README_CN.md))
@@ -34,7 +39,10 @@ add this line to pubspec.yaml
 
    dependencies:
 
-    pull_to_refresh: ^2.0.0
+    pull_to_refresh: 
+    git:
+      url: https://github.com/anjarnaufals/flutter_pulltorefresh
+      ref: maaster
 
 
 ```
