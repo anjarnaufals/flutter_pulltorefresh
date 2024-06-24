@@ -9,7 +9,7 @@ import 'package:flutter/material.dart'
     hide RefreshIndicatorState, RefreshIndicator;
 
 class TestHeader extends RefreshIndicator {
-  const TestHeader();
+  const TestHeader({super.key});
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -42,7 +42,7 @@ class _TestHeaderState extends RefreshIndicatorState<TestHeader> {
 }
 
 class TestFooter extends LoadIndicator {
-  const TestFooter();
+  const TestFooter({super.key});
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
