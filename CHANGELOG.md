@@ -1,3 +1,8 @@
+## 3.0.1
+###  Other:
+* fix dependencies
+
+
 ## 3.0.0
 ### Breaking Changes:
 * Add flutter version constraint to be >=3.22.0. This will break for lower versions of Flutter
