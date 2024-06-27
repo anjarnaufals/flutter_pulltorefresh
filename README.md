@@ -42,7 +42,7 @@ add this line to pubspec.yaml
     pull_to_refresh: 
     git:
       url: https://github.com/anjarnaufals/flutter_pulltorefresh
-      ref: maaster
+      ref: master
 
 
 ```
